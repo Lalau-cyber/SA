@@ -1,10 +1,10 @@
-
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Entrada from './pages/Entrada';
 import Topico from './pages/Topico';
 import Trilha from './pages/Trilha';
 import Painel from './pages/Painel';
-import './app.css'
+import Diagnostico from './pages/Diagnostico';
+import './app.css';
 
 export default function App() {
   return (
