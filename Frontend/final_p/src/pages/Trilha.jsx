@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import api from '../services/api';
+import api from '../data/api.js';
 import Card from '../components/Card';
+import Loading from '../components/FeedBack.jsx';
 
 export default function Trilha() {
     const [topicos, setTopicos] = useState([]);
@@ -15,8 +16,7 @@ export default function Trilha() {
             .finally(() => setCarregando(false));
     }, []); // Array de dependências vazio = executa apenas uma vez ao montar a tela
 
-    if (carregando) return <p style={{ textAlign: 'center', paddingTop: '50px' }}>Carregando sua trilha pedagógica...</p>;
-
+    if (carregando) return <Loading texto= "Carregando sua trilha pedagógica..."/>;
     return (
         <div className="max-width-wrapper">
             <div className="flex-between">

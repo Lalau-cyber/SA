@@ -1,8 +1,9 @@
-import {usestate} from 'react';
+import {useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {useEstudante} from '../context/EstudanteContext';
 import Botao from '../components/Botao';
 import Card from '../components/Card';
+import api from '../data/api.js'
 
 export default function Login(){
 
@@ -39,7 +40,7 @@ return(
                             type="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            require
+                            required
                             className="input-controle"
                         />
                     </div>
@@ -50,12 +51,12 @@ return(
                             type="password"
                             value={senha}
                             onChange={(e) => setSenha(e.target.value)}
-                            require
+                            required
                             className="input-controle"
                         />
                     </div>
 
-                    <Botao type="submit"></Botao>
+                    <Botao type="submit">sair</Botao>
                 </form>
     
             </Card>

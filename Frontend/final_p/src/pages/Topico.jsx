@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import api from '../services/api';
+import api from '../data/api.js'
 import Card from '../components/Card';
 import Botao from '../components/Botao';
 import FeedbackBox from '../components/FeedbackBox';

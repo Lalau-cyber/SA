@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import api from '../services/api';
+import api from '../data/api.js';
 import Card from '../components/Card';
+import BarraProgresso from '../components/BarraProgresso.jsx';
 
 export default function Painel() {
     const [historico, setHistorico] = useState([]);
@@ -13,10 +14,15 @@ export default function Painel() {
             .finally(() => setCarregando(false));
     }, []);
 
+    const totalTopicos = historico.length;
+const concluidos = historico.filter(item => item.status === 'Aprovado').length;
+
     return (
         <div className="max-width-wrapper">
             <div className="flex-between">
                 <h2>Painel de Evolução</h2>
+                <BarraProgresso concluidos={concluidos} total={totalTopicos} />
+
                 <Link to="/trilha" className="texto-link">Retornar à Trilha</Link>
             </div>
 
