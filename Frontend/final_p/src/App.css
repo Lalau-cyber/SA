@@ -1,4 +1,5 @@
 :root {
+<<<<<<< HEAD
   --bg-principal: #f9fafb;
   --cor-texto: #1f2937;
   --cor-azul: #2563eb;
@@ -155,4 +156,24 @@ body {
   color: #4b5563;
   line-height: 1.6;
   margin-bottom: 16px;
+=======
+  --tinta: #20201c;
+  --areia: #f2ecdd;
+  --teal: #1b4b43;
+  --teal-alta: #14372f;
+  --musgo: #7fa895;
+  --ocre: #c99a3d;
+  --terra: #a44a35;
+  --branco-papel: #faf7ee;
+
+  --fonte-display: "Fraunces", serif;
+  --fonte-corpo: "Work Sans", sans-serif;
+  --fonte-dado: "IBM Plex Mono", monospace;
+}
+
+body {
+  background: var(--areia);
+  color: var(--tinta);
+  font-family: var(--fonte-corpo);
+>>>>>>> 03c5ff76da7e9520f9b7df2d228b0b3dbe4eaff2
 }

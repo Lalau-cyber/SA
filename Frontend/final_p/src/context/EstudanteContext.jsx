@@ -1,24 +1,39 @@
-// src/context/EstudanteContext.jsx
 import { createContext, useContext, useState } from "react";
 
-// 1) Cria o contexto:
-const EstudanteContext = createContext();
+const EstudanteContext = createContext(null);
 
-// 2) Cria o Provider (vai "abraçar" o App no main.jsx):
 export function EstudanteProvider({ children }) {
   const [estudante, setEstudante] = useState(null);
-  const [progresso, setProgresso] = useState([]);
+  const [diagnostico, setDiagnostico] = useState(null);
+  const [trilha, setTrilha] = useState([]);
+  const [topicosConcluidos, setTopicosConcluidos] = useState([]);
+
+  function identificarEstudante(nome) {
+    setEstudante({ id: crypto.randomUUID(), nome });
+  }
+
+  function marcarTopicoConcluido(idTopico) {
+    setTopicosConcluidos((atual) =>
+      atual.includes(idTopico) ? atual : [...atual, idTopico]
+    );
+  }
+
+  const valor = {
+    estudante, identificarEstudante,
+    diagnostico, setDiagnostico,
+    trilha, setTrilha,
+    topicosConcluidos, marcarTopicoConcluido,
+  };
 
   return (
-    <EstudanteContext.Provider
-      value={{ estudante, setEstudante, progresso, setProgresso }}
-    >
+    <EstudanteContext.Provider value={valor}>
       {children}
     </EstudanteContext.Provider>
   );
 }
 
-// 3) Atalho para consumir o contexto nas telas:
 export function useEstudante() {
-  return useContext(EstudanteContext);
+  const contexto = useContext(EstudanteContext);
+  if (!contexto) throw new Error("useEstudante deve ser usado dentro de EstudanteProvider");
+  return contexto;
 }
