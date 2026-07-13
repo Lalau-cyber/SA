@@ -1,3 +1,13 @@
+<<<<<<< HEAD
+// src/data/api.js
+import axios from "axios";
+
+const api = axios.create({
+  // Endereço da API local (o json-server sobe nesta porta).
+  baseURL: "http://localhost:3000",
+});
+
+=======
 // src/data/api.js (ou onde gerenciar suas requisições)
 import axios from "axios";
 
@@ -25,4 +35,5 @@ export async function enviarAvaliacaoTopico(topico_id, estudante_id, respostas) 
   return await api.post("/avaliacoes/responder", { topico_id, estudante_id, respostas });
 }
 
+>>>>>>> 03c5ff76da7e9520f9b7df2d228b0b3dbe4eaff2
 export default api;

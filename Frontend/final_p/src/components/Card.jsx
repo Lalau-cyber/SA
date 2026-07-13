@@ -1,3 +1,12 @@
+<<<<<<< HEAD
+export default function Card({children, titulo}) {
+    return (
+        <div className="card">
+            {titulo && <h3 className="card-titulo">{titulo}</h3>}
+            {children}
+        </div>
+    );
+=======
 import  Diagnostico from "../pages/Diagnostico";
 import {Link } from 'react-router-dom'
 
@@ -36,4 +45,5 @@ export function Card({ title, description, link }) {
       </Link>
     </div>
   );
+>>>>>>> 03c5ff76da7e9520f9b7df2d228b0b3dbe4eaff2
 }
