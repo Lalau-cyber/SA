@@ -1,4 +1,5 @@
 import { createContext, useContext, useState } from "react";
+import api from "../data/api.js";
 
 const EstudanteContext = createContext(null);
 
@@ -8,21 +9,31 @@ export function EstudanteProvider({ children }) {
   const [trilha, setTrilha] = useState([]);
   const [topicosConcluidos, setTopicosConcluidos] = useState([]);
 
-  function identificarEstudante(nome) {
-    setEstudante({ id: crypto.randomUUID(), nome });
+  // CORRIGIDO: Agora envia ao Node.js e guarda o ID gerado pelo PostgreSQL
+async function identificarEstudante(nome, email) {
+  try {
+    const resposta = await api.post('/estudantes', { nome, email });
+    
+    // ATENÇÃO AQUI: pegando o "estudante_id" que vem do Node.js
+    setEstudante({ id: resposta.data.estudante_id, nome }); 
+    return resposta.data;
+  } catch (erro) {
+    console.error("Erro no context do estudante:", erro);
+    throw erro;
   }
+}
 
-  function marcarTopicoConcluido(idTopico) {
-    setTopicosConcluidos((atual) =>
-      atual.includes(idTopico) ? atual : [...atual, idTopico]
-    );
+  // CORRIGIDO: Envia para a rota exata do teu TrilhaController
+  async function enviarDiagnostico(estudante_id, respostas) {
+    return api.post('/trilhas/diagnostico', { estudante_id, respostas });
   }
 
   const valor = {
-    estudante, identificarEstudante,
+    estudante, setEstudante, identificarEstudante,
     diagnostico, setDiagnostico,
     trilha, setTrilha,
-    topicosConcluidos, marcarTopicoConcluido,
+    topicosConcluidos, setTopicosConcluidos,
+    enviarDiagnostico,
   };
 
   return (
@@ -33,7 +44,5 @@ export function EstudanteProvider({ children }) {
 }
 
 export function useEstudante() {
-  const contexto = useContext(EstudanteContext);
-  if (!contexto) throw new Error("useEstudante deve ser usado dentro de EstudanteProvider");
-  return contexto;
+  return useContext(EstudanteContext);
 }

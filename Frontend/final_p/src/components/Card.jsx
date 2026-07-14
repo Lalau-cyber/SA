@@ -1,16 +1,13 @@
-<<<<<<< HEAD
-export default function Card({children, titulo}) {
-    return (
-        <div className="card">
-            {titulo && <h3 className="card-titulo">{titulo}</h3>}
-            {children}
-        </div>
-    );
-=======
-import  Diagnostico from "../pages/Diagnostico";
-import {Link } from 'react-router-dom'
+export function Card({ children, titulo }) {
+  return (
+    <div className="card">
+      {titulo && <h3 className="card-titulo">{titulo}</h3>}
+      {children}
+    </div>
+  );
+}
 
-export  function QuestaoCard({ numero, questao, respostaSelecionada, onSelecionar, desabilitada = false }) {
+export function QuestaoCard({ numero, questao, respostaSelecionada, onSelecionar, desabilitada = false }) {
   return (
     <div className="questao-card">
       <span className="questao-card__numero">Questão {numero}</span>
@@ -34,16 +31,4 @@ export  function QuestaoCard({ numero, questao, respostaSelecionada, onSeleciona
       </div>
     </div>
   );
-}
-export function Card({ title, description, link }) {
-  return (
-    <div className="card">
-      <h3>{title}</h3>
-      <p>{description}</p>
-      <Link to={link} className="card-link">
-        Saiba mais
-      </Link>
-    </div>
-  );
->>>>>>> 03c5ff76da7e9520f9b7df2d228b0b3dbe4eaff2
 }

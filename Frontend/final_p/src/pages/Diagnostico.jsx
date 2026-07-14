@@ -1,130 +1,96 @@
-<<<<<<< HEAD
-
-   import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import api from '../data/api.js';
-import Botao from '../components/Botao';
-import Card from '../components/Card';
-
-export default function Diagnostico() {
-    const [meta, setMeta] = useState('');
-    const [nivel, setNivel] = useState('');
-    const [carregando, setCarregando] = useState(false);
-    const navigate = useNavigate();
-
-    const processarDiagnostico = async (e) => {
-        e.preventDefault();
-        setCarregando(true); // Ativa estado de carregamento visual
-        
-        try {
-            // Envia os dados para a APIREST processar com a API do Gemini
-            await api.post('/diagnostico', { meta, nivel });
-            navigate('/trilha');
-        } catch (erro) {
-            alert('Ocorreu um erro ao gerar sua trilha com o Gemini.');
-        } finally {
-            setCarregando(false);
-        }
-    };
-
-    return (
-        <div className="max-width-wrapper">
-            <Card titulo="Avaliação Diagnóstica Inicial">
-                {/* RENDERIZAÇÃO CONDICIONAL TERNÁRIA: Mostra o aviso de IA ou o formulário */}
-                {carregando ? (
-                    <p className="descricao animate-pulse">O Gemini está analisando suas respostas e montando sua trilha...</p>
-                ) : (
-                    <form onSubmit={processarDiagnostico}>
-                        <div className="form-grupo">
-                            <label>O que você deseja aprender ou aprimorar?</label>
-                            <input 
-                                type="text" 
-                                value={meta} 
-                                onChange={e => setMeta(e.target.value)} 
-                                placeholder="Ex: Banco de dados estruturado" 
-                                className="input-controle" 
-                                required 
-                            />
-                        </div>
-                        <div className="form-grupo">
-                            <label>Como você avalia seu nível atual neste assunto?</label>
-                            <select value={nivel} onChange={e => setNivel(e.target.value)} className="select-controle" required>
-                                <option value="">Selecione...</option>
-                                <option value="iniciante">Nunca vi / Iniciante</option>
-                                <option value="intermediario">Conheço o básico / Intermediário</option>
-                            </select>
-                        </div>
-                        <Botao type="submit">Iniciar Análise Pedagógica</Botao>
-                    </form>
-                )}
-            </Card>
-        </div>
-    );
-}
-=======
 import { useState } from 'react';
 import { useEstudante } from '../context/EstudanteContext';
 import { useNavigate } from 'react-router-dom';
 import Botao from '../components/Botao';
-import { QuestaoCard } from '../components/Card'; // Seus componentes importados
-
-const questoes_diagnostico = [
-    { id: "q1", enunciado: "Em JavaScript, qual estrutura você usaria para repetir uma ação um número definido de vezes?", opcoes: ["if / else", "for", "try / catch", "import"] },
-];
+import { Card } from '../components/Card';
 
 export default function Diagnostico() {
-     const [respostas, setRespostas] = useState({}); // Plural corrigido
-     const [carregando, setCarregando] = useState(false); // Corrigido 'flase'
-     const [erro, setErro] = useState("");
-     const [resultado, setResultado] = useState(null);
-     
-     // useEstudante deve retornar o objeto do contexto, não um array de estado
-     const { estudante, setDiagnostico, enviarDiagnostico } = useEstudante(); 
-     const navegar = useNavigate(); 
+  // Estados para guardar as respostas abertas do aluno
+  const [duvidas, setDuvidas] = useState('');
+  const [melhorias, setMelhorias] = useState('');
+  
+  const [carregando, setCarregando] = useState(false);
+  const [erro, setErro] = useState("");
+  const [resultado, setResultado] = useState(null);
 
-    function selecionarResposta(idQuestao, indiceOpcao) {
-        setRespostas((atual) => ({ ...atual, [idQuestao]: indiceOpcao }));
+  const { estudante, setDiagnostico, enviarDiagnostico } = useEstudante();
+  const navegar = useNavigate();
+
+  async function aoEnviar(evento) {
+    evento.preventDefault();
+    
+    if (!duvidas.trim() || !melhorias.trim()) {
+      setErro("Por favor, preencha ambos os campos para podermos criar a sua trilha!");
+      return;
     }
 
-    const todasRespondidas = questoes_diagnostico.every((q) => respostas[q.id] !== undefined);
+    setCarregando(true);
+    setErro("");
 
-    async function aoEnviar(evento) {
-        evento.preventDefault();
-        if (!todasRespondidas) return;
-        setCarregando(true);
-        try {
-            // Supondo que sua API/Contexto trate essa chamada:
-            const resposta = await enviarDiagnostico(estudante.id, respostas);
-            setResultado(resposta.data);
-            setDiagnostico(resposta.data);
-        } catch (e) {
-            setErro(e.message || "Erro ao enviar");
-        } finally {
-            setCarregando(false);
-        }
+    // Agrupa as respostas num objeto para enviar ao back-end
+    const dadosDiagnostico = {
+      assunto_duvida: duvidas.trim(),
+      deseja_melhorar: melhorias.trim()
+    };
+
+    try {
+      const resposta = await enviarDiagnostico(estudante.id, dadosDiagnostico);
+      setResultado(resposta.data);
+      setDiagnostico(resposta.data);
+    } catch (e) {
+      setErro(e.response?.data?.error || "Erro ao gerar a sua trilha customizada.");
+    } finally {
+      setCarregando(false);
     }
-        
-    return resultado ? (
-       <div className="diagnostico__resultado">
-          <p>{resultado.resumo}</p>
-          <Botao onClick={() => navegar("/trilha")}>Ver minha trilha →</Botao>
-       </div>
-    ) : (
+  }
+
+  return resultado ? (
+    <div className="diagnostico__resultado" style={{ maxWidth: '600px', margin: '40px auto', textAlign: 'center' }}>
+      <Card titulo="✨ Trilha Gerada com Sucesso!">
+        <p style={{ marginBottom: '20px', lineHeight: '1.6' }}>{resultado.resumo}</p>
+        <Botao onClick={() => navegar("/trilha")}>Ver minha trilha →</Botao>
+      </Card>
+    </div>
+  ) : (
+    <div className="max-width-wrapper" style={{ maxWidth: '500px', margin: '40px auto' }}>
+      <Card titulo="Diagnóstico de Perfil Individual">
         <form onSubmit={aoEnviar}>
-          {questoes_diagnostico.map((questao, i) => ( // Corrigido para minúsculo
-            <QuestaoCard
-              key={questao.id}
-              numero={i + 1}
-              questao={questao}
-              respostaSelecionada={respostas[questao.id]}
-              onSelecionar={selecionarResposta}
+          
+          <div className="campo-form" style={{ marginBottom: '20px' }}>
+            <label style={{ fontWeight: 'bold', display: 'block', marginBottom: '8px' }}>
+              Qual o assunto ou conceito de programação que você tem mais dúvidas atualmente?
+            </label>
+            <textarea
+              value={duvidas}
+              onChange={(e) => setDuvidas(e.target.value)}
+              className="textarea-controle"
+              placeholder="Ex: Tenho muita dificuldade em entender como funcionam loops assíncronos e Promises no JavaScript..."
+              style={{ width: '100%', minHeight: '100px', padding: '10px', borderRadius: '6px', border: '1px solid #ccc' }}
+              required
             />
-          ))}
-          {erro && <p className="erro">{erro}</p>}
-          <Botao tipo="submit" desabilitado={!todasRespondidas || carregando}>
-            {carregando ? "Analisando..." : "Enviar diagnóstico"}
+          </div>
+
+          <div className="campo-form" style={{ marginBottom: '20px' }}>
+            <label style={{ fontWeight: 'bold', display: 'block', marginBottom: '8px' }}>
+              No que você deseja melhorar ou focar mais durante esta jornada?
+            </label>
+            <textarea
+              value={melhorias}
+              onChange={(e) => setMelhorias(e.target.value)}
+              className="textarea-controle"
+              placeholder="Ex: Quero melhorar a escrita do meu código lógico e conseguir criar funções mais limpas..."
+              style={{ width: '100%', minHeight: '100px', padding: '10px', borderRadius: '6px', border: '1px solid #ccc' }}
+              required
+            />
+          </div>
+
+          {erro && <p style={{ color: 'red', fontSize: '14px', marginBottom: '15px' }}>{erro}</p>}
+
+          <Botao tipo="submit" disabilitado={carregando}>
+            {carregando ? "IA construindo sua trilha..." : "Gerar Trilha Personalizada"}
           </Botao>
         </form>
-    );
+      </Card>
+    </div>
+  );
 }
->>>>>>> 03c5ff76da7e9520f9b7df2d228b0b3dbe4eaff2
