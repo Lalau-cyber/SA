@@ -15,7 +15,7 @@ export default function Layout({ children }) {
     <>
       <header className="cabecalho">
         <div className="cabecalho__conteudo">
-          <Link to="/" className="marca">Trilha</Link>
+          <Link to="/" className="marca">TrilhaAdaptativa</Link>
           <nav className="nav">
             {ITENS_NAV.map((item) => (
               <Link
@@ -26,11 +26,15 @@ export default function Layout({ children }) {
                 {item.rotulo}
               </Link>
             ))}
-            {estudante && <span className="nav__estudante">{estudante.nome}</span>}
+            {estudante && <span className="nav__estudante" style={{ marginLeft: '15px', fontWeight: 'bold' }}>{estudante.nome}</span>}
           </nav>
         </div>
       </header>
-      <main><div className="container">{children}</div></main>
+      <main>
+        <div className="container" style={{ paddingTop: '20px' }}>
+          {children}
+        </div>
+      </main>
     </>
   );
 }

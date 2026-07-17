@@ -4,45 +4,72 @@ const { perguntarAoGemini } = require('./AiController');
 
 // 1. Recebe o teste inicial do Diagnostico.jsx e cria a Trilha com 3 tópicos via Gemini
 exports.processarDiagnostico = async (req, res) => {
-  const { estudante_id, respostas } = req.body;
+  const { estudante_id, respostas } = req.body; // respostas agora contém { assunto_duvida, deseja_melhorar }
 
   try {
+    // Novo prompt interpretando as dores e objetivos reais do estudante
     const prompt = `
-      Atue como tutor pedagógico. O estudante respondeu a estas questões de JavaScript: ${JSON.stringify(respostas)}.
-      Gere um resumo sobre o nível dele e defina 3 tópicos sequenciais para ele estudar.
-      Responda APENAS neste formato JSON:
+      Atue como um tutor pedagógico de programação especialista e compassivo.
+      O estudante se identificou e relatou o seguinte diagnóstico sobre seus estudos:
+      - Principais dúvidas/dificuldades: "${respostas.assunto_duvida}"
+      - O que deseja focar/melhorar: "${respostas.deseja_melhorar}"
+
+      Com base nessas informações, crie um plano de estudo personalizado contendo exatamente 3 tópicos sequenciais para sanar essas dores.
+      Para cada tópico, você deve gerar uma explicação teórica robusta e uma questão aberta instigante para avaliar o aprendizado.
+
+      Responda APENAS no formato JSON estruturado abaixo:
       {
-        "resumo": "Texto da tua análise para o aluno ler.",
+        "resumo": "Uma mensagem acolhedora analisando as dificuldades que o aluno citou e explicando como esta trilha vai ajudá-lo.",
         "topicos": [
-          { "titulo": "Nome do Tópico 1", "descricao": "O que aprender", "ordem": 1 },
-          { "titulo": "Nome do Tópico 2", "descricao": "O que aprender", "ordem": 2 },
-          { "titulo": "Nome do Tópico 3", "descricao": "O que aprender", "ordem": 3 }
+          {
+            "titulo": "Nome direto do Tópico 1",
+            "descricao": "Resumo curto do objetivo deste tópico",
+            "conteudo_estudo": "Texto completo contendo a aula teórica explicativa focada em resolver a dúvida que ele citou.",
+            "questao_gerada": "Uma pergunta aberta ou desafio conceitual prático para o aluno responder/digitar a dúvida dele de volta.",
+            "ordem": 1
+          },
+          {
+            "titulo": "Nome direto do Tópico 2",
+            "descricao": "Resumo curto do objetivo deste tópico",
+            "conteudo_estudo": "Texto completo contendo a aula teórica explicativa avançando no conceito.",
+            "questao_gerada": "Uma pergunta aberta ou desafio conceitual prático sobre este tópico.",
+            "ordem": 2
+          },
+          {
+            "titulo": "Nome direto do Tópico 3",
+            "descricao": "Resumo curto do objetivo deste tópico",
+            "conteudo_estudo": "Texto completo contendo a aula teórica explicativa concluindo a trilha.",
+            "questao_gerada": "Uma pergunta aberta final para consolidação do conhecimento.",
+            "ordem": 3
+          }
         ]
       }
     `;
 
     const resultadoIA = await perguntarAoGemini(prompt);
 
-    // Salva a trilha principal ligada ao aluno
+    // 1. Salva a trilha ligada ao estudante
     const novaTrilha = await pool.query(
       'INSERT INTO trilhas (estudante_id, objetivo_estudo) VALUES ($1, $2) RETURNING id',
-      [estudante_id, 'Trilha Adaptativa de JavaScript']
+      [estudante_id, respostas.assunto_duvida]
     );
     const trilhaId = novaTrilha.rows[0].id;
 
-    // Guarda cada um dos tópicos criados pela IA no banco de dados
-    for (const t of resultadoIA.topicos) {
+    // 2. Salva os tópicos enriquecidos gerados pelo Gemini
+    for (const topico of resultadoIA.topicos) {
       await pool.query(
-        'INSERT INTO topicos (trilha_id, titulo, descricao, ordem) VALUES ($1, $2, $3, $4)',
-        [trilhaId, t.titulo, t.descricao, t.ordem]
+        `INSERT INTO topicos (trilha_id, titulo, descricao, conteudo_estudo, questao_gerada, ordem) 
+         VALUES ($1, $2, $3, $4, $5, $6)`,
+        [trilhaId, topico.titulo, topico.descricao, topico.conteudo_estudo, topico.questao_gerada, topico.ordem]
       );
     }
 
-    // Retorna a chave "resumo" exata que o teu Diagnostico.jsx espera (resultado.resumo)
+    // Retorna o resumo para a tela de diagnóstico do front-end
     res.json({ resumo: resultadoIA.resumo });
 
   } catch (error) {
-    res.status(500).json({ error: "Erro no diagnóstico: " + error.message });
+    console.error("Erro no processarDiagnostico:", error);
+    res.status(500).json({ error: "Erro interno ao processar o diagnóstico com a inteligência artificial." });
   }
 };
 
