@@ -1,0 +1,462 @@
+/* ---------------------------------------------------
+   Trilha — Design tokens
+   Conceito: aprendizagem como uma trilha real, com
+   pontos de passagem (waypoints) e progresso visível.
+--------------------------------------------------- */
+:root {
+  --cor-fundo: #F3F6F4;
+  --cor-superficie: #FFFFFF;
+  --cor-texto: #16211D;
+  --cor-texto-suave: #5B6A62;
+  --cor-linha: #DDE5DF;
+
+  --cor-trilha: #2F6F5E;      /* verde-trilha: caminho, progresso */
+  --cor-trilha-escuro: #21503F;
+  --cor-marco: #E1963B;       /* âmbar: pontos concluídos / destaque */
+  --cor-erro: #B3492F;
+  --cor-erro-fundo: #FBEAE5;
+  --cor-sucesso-fundo: #E9F3EC;
+
+  --fonte-display: 'Fraunces', Georgia, serif;
+  --fonte-corpo: 'Inter', system-ui, sans-serif;
+  --fonte-dados: 'JetBrains Mono', monospace;
+
+  --raio: 14px;
+  --raio-pequeno: 8px;
+  --sombra: 0 1px 2px rgba(22, 33, 29, 0.04), 0 8px 24px rgba(22, 33, 29, 0.06);
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--cor-fundo);
+  color: var(--cor-texto);
+  font-family: var(--fonte-corpo);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3 {
+  font-family: var(--fonte-display);
+  font-weight: 600;
+  line-height: 1.15;
+  margin: 0 0 0.4em 0;
+  letter-spacing: -0.01em;
+}
+
+h1 { font-size: clamp(1.9rem, 2.4vw + 1rem, 2.7rem); }
+h2 { font-size: 1.5rem; }
+h3 { font-size: 1.1rem; }
+
+p { line-height: 1.6; color: var(--cor-texto); }
+
+a { color: var(--cor-trilha-escuro); }
+
+button, input, textarea, select { font-family: inherit; }
+
+:focus-visible {
+  outline: 2px solid var(--cor-trilha);
+  outline-offset: 2px;
+}
+
+.container {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 4rem;
+}
+
+/* ---------------- Cabeçalho / navegação ---------------- */
+.cabecalho {
+  border-bottom: 1px solid var(--cor-linha);
+  background: var(--cor-superficie);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.cabecalho__conteudo {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.marca {
+  font-family: var(--fonte-display);
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: var(--cor-trilha-escuro);
+  text-decoration: none;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.nav__link {
+  font-size: 0.92rem;
+  font-weight: 500;
+  color: var(--cor-texto-suave);
+  text-decoration: none;
+  padding-bottom: 4px;
+  border-bottom: 2px solid transparent;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.nav__link:hover { color: var(--cor-texto); }
+
+.nav__link--ativo {
+  color: var(--cor-trilha-escuro);
+  border-bottom-color: var(--cor-marco);
+}
+
+.nav__estudante {
+  font-size: 0.85rem;
+  color: var(--cor-texto-suave);
+  background: var(--cor-fundo);
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  border: 1px solid var(--cor-linha);
+}
+
+/* ---------------- Card ---------------- */
+.card {
+  background: var(--cor-superficie);
+  border: 1px solid var(--cor-linha);
+  border-radius: var(--raio);
+  padding: 1.5rem;
+  box-shadow: var(--sombra);
+}
+
+.card-titulo {
+  font-family: var(--fonte-display);
+  margin-bottom: 0.75rem;
+}
+
+/* ---------------- Botão ---------------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1.4rem;
+  border-radius: var(--raio-pequeno);
+  border: 1px solid transparent;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: transform 0.1s ease, background 0.15s ease, opacity 0.15s ease;
+}
+
+.btn:disabled { opacity: 0.55; cursor: not-allowed; }
+.btn:not(:disabled):active { transform: translateY(1px); }
+
+.btn-primary {
+  background: var(--cor-trilha);
+  color: #fff;
+}
+.btn-primary:not(:disabled):hover { background: var(--cor-trilha-escuro); }
+
+.btn-secondary {
+  background: transparent;
+  color: var(--cor-trilha-escuro);
+  border-color: var(--cor-linha);
+}
+.btn-secondary:not(:disabled):hover { border-color: var(--cor-trilha); }
+
+/* ---------------- Formulários ---------------- */
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 1.1rem;
+}
+
+.campo label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--cor-texto-suave);
+}
+
+.campo input,
+.campo textarea {
+  padding: 0.65rem 0.8rem;
+  border-radius: var(--raio-pequeno);
+  border: 1px solid var(--cor-linha);
+  background: var(--cor-superficie);
+  font-size: 0.95rem;
+  color: var(--cor-texto);
+}
+
+.campo input:focus,
+.campo textarea:focus {
+  border-color: var(--cor-trilha);
+}
+
+.erro-formulario {
+  background: var(--cor-erro-fundo);
+  color: var(--cor-erro);
+  border-radius: var(--raio-pequeno);
+  padding: 0.6rem 0.9rem;
+  font-size: 0.88rem;
+  margin-bottom: 1rem;
+}
+
+/* ---------------- Loading ---------------- */
+.loading-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 0;
+}
+
+.loading-spinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.loading-spinner::before {
+  content: "";
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 3px solid var(--cor-linha);
+  border-top-color: var(--cor-trilha);
+  animation: girar 0.8s linear infinite;
+}
+
+@keyframes girar { to { transform: rotate(360deg); } }
+
+.loading-texto {
+  color: var(--cor-texto-suave);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+/* ---------------- Barra de progresso ---------------- */
+.barra-progresso-wrapper { margin: 1rem 0 1.5rem; }
+
+.barra-progresso-fundo {
+  width: 100%;
+  height: 8px;
+  background: var(--cor-linha);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.barra-progresso-preenchimento {
+  height: 100%;
+  background: linear-gradient(90deg, var(--cor-trilha), var(--cor-marco));
+  border-radius: 999px;
+  transition: width 0.4s ease;
+}
+
+.barra-progresso-texto {
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--cor-texto-suave);
+  font-family: var(--fonte-dados);
+}
+
+/* ---------------- Trilha: waypoints (elemento assinatura) ---------------- */
+.trilha-caminho {
+  position: relative;
+  padding-left: 2.5rem;
+}
+
+.trilha-caminho::before {
+  content: "";
+  position: absolute;
+  left: 11px;
+  top: 10px;
+  bottom: 10px;
+  width: 2px;
+  background: var(--cor-linha);
+}
+
+.trilha-marco {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.trilha-marco::before {
+  content: attr(data-ordem);
+  position: absolute;
+  left: -2.5rem;
+  top: 1.3rem;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--cor-superficie);
+  border: 2px solid var(--cor-trilha);
+  color: var(--cor-trilha-escuro);
+  font-family: var(--fonte-dados);
+  font-size: 0.72rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.trilha-marco--concluido::before {
+  background: var(--cor-marco);
+  border-color: var(--cor-marco);
+  color: #fff;
+}
+
+.trilha-marco__link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
+.trilha-marco__card {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.trilha-marco__selo {
+  font-size: 0.72rem;
+  font-family: var(--fonte-dados);
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.trilha-marco__selo--ok {
+  background: var(--cor-sucesso-fundo);
+  color: var(--cor-trilha-escuro);
+}
+
+.trilha-marco__selo--pendente {
+  background: var(--cor-fundo);
+  color: var(--cor-texto-suave);
+  border: 1px solid var(--cor-linha);
+}
+
+/* ---------------- Questão / feedback ---------------- */
+.questao-card { margin-bottom: 1.75rem; }
+
+.questao-card__enunciado {
+  font-weight: 600;
+  margin-bottom: 0.9rem;
+}
+
+.questao-card__opcoes {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.opcao {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.65rem 0.85rem;
+  border: 1px solid var(--cor-linha);
+  border-radius: var(--raio-pequeno);
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.opcao:hover { border-color: var(--cor-trilha); }
+
+.opcao--selecionada {
+  border-color: var(--cor-trilha);
+  background: var(--cor-sucesso-fundo);
+}
+
+.opcao input { accent-color: var(--cor-trilha); }
+
+.feedback {
+  border-radius: var(--raio-pequeno);
+  padding: 1rem 1.1rem;
+  margin-top: 1rem;
+}
+
+.feedback--correto {
+  background: var(--cor-sucesso-fundo);
+  border: 1px solid var(--cor-trilha);
+}
+
+.feedback--incorreto {
+  background: var(--cor-erro-fundo);
+  border: 1px solid var(--cor-erro);
+}
+
+.feedback__titulo {
+  display: block;
+  font-weight: 700;
+  font-family: var(--fonte-display);
+  margin-bottom: 0.3rem;
+}
+
+/* ---------------- Painel / histórico ---------------- */
+.painel-resumo {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1rem;
+  margin: 1.5rem 0 2rem;
+}
+
+.painel-metrica {
+  background: var(--cor-superficie);
+  border: 1px solid var(--cor-linha);
+  border-radius: var(--raio);
+  padding: 1.1rem 1.2rem;
+}
+
+.painel-metrica__valor {
+  font-family: var(--fonte-dados);
+  font-size: 1.7rem;
+  color: var(--cor-trilha-escuro);
+}
+
+.painel-metrica__rotulo {
+  font-size: 0.8rem;
+  color: var(--cor-texto-suave);
+}
+
+.historico-linha {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem 0;
+  border-bottom: 1px solid var(--cor-linha);
+}
+
+.historico-linha:last-child { border-bottom: none; }
+
+.historico-linha__titulo { font-weight: 600; }
+
+.historico-linha__data {
+  font-family: var(--fonte-dados);
+  font-size: 0.78rem;
+  color: var(--cor-texto-suave);
+}
+
+.estado-vazio {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--cor-texto-suave);
+}
+
+.eyebrow {
+  font-family: var(--fonte-dados);
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--cor-marco);
+  display: block;
+  margin-bottom: 0.5rem;
+}
